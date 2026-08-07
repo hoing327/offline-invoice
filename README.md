@@ -27,6 +27,7 @@ Small things, but they are the ones that cause arguments with a client:
 - **Zero-decimal currencies** print as ¥3,000, not ¥3,000.00.
 - **The currency code is on the amount-due line**, because `$` alone is ambiguous between at least six currencies.
 - **Invoice numbers increment, and deleting an issued one warns you.** Most tax authorities want a gap-free sequence.
+- **The invoice you're editing survives a refresh.** It's written to your browser as you type, so a closed tab, a stray Ctrl-R, or a flat battery doesn't cost you the work. (That's separate from **Save**, which files a finished invoice in the list.)
 
 ## Check the arithmetic yourself
 
