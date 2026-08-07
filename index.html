@@ -433,6 +433,27 @@ function persist(){
   catch(e){ toast("Could not save — storage full? Try a smaller logo."); }
 }
 
+/* The invoice being edited is mirrored to storage after every change, so that a
+   refresh, a closed tab, or a flat battery does not silently destroy work in
+   progress. Debounced, because render() runs on every keystroke.
+   A self-test run never writes: checking the arithmetic must not overwrite the
+   invoice you had open. */
+var SELFTEST = location.hash === "#selftest";
+var draftTimer = null;
+function persistDraftSoon(){
+  if(SELFTEST || !cur) return;
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(function(){
+    try{
+      db.draft = JSON.parse(JSON.stringify(cur));
+      localStorage.setItem(KEY, JSON.stringify(db));
+    }catch(e){ /* quota: the explicit Save button still reports the failure */ }
+  }, 300);
+}
+function usableDraft(d){
+  return !!d && typeof d === "object" && Array.isArray(d.items) && d.items.length > 0;
+}
+
 /* ---------------------------------------------------------------
    helpers
 --------------------------------------------------------------- */
@@ -823,6 +844,7 @@ function render(){
     (i.footer ? '<div class="p-foot">'+esc(i.footer)+'</div>' : '');
 
   $("cntSaved").textContent = db.invoices.length;
+  persistDraftSoon();
 }
 
 /* ---------------------------------------------------------------
@@ -1115,7 +1137,15 @@ load();
 if(location.hash === "#selftest"){ selftest(); }
 else{
   fillProfileForm();
+  /* newInvoice() first, always: it produces a complete object in the current
+     shape. A restored draft then supplies values only for keys that shape
+     still has, so a draft written by an older version cannot leave a field
+     missing or carry a stale one back in. */
   newInvoice();
+  if(usableDraft(db.draft)){
+    var d = db.draft;
+    for(var dk in cur){ if(Object.prototype.hasOwnProperty.call(d, dk)) cur[dk] = JSON.parse(JSON.stringify(d[dk])); }
+  }
   fillForm();
   refreshClientPick();
   render();
