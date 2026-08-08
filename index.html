@@ -23,6 +23,29 @@
 <meta name="twitter:title" content="Offline Invoice — an invoice generator in one HTML file">
 <meta name="twitter:description" content="No account, no server, no dependencies. Save the page and it keeps working with the network off.">
 <meta name="twitter:image" content="https://hoing327.github.io/offline-invoice/og.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"SoftwareApplication","@id":"https://hoing327.github.io/offline-invoice/#app",
+"name":"Offline Invoice","applicationCategory":"BusinessApplication","operatingSystem":"Any browser",
+"url":"https://hoing327.github.io/offline-invoice/",
+"description":"An invoice generator in a single HTML file. No account, no server, no dependencies. Save the page to disk and it keeps working with the network off. Data stays in localStorage.",
+"featureList":["Runs offline from one HTML file","No account and no server","Data stored in localStorage","Export and import the whole dataset as JSON","Per-line rounding that matches accounting systems","Zero-decimal currency support (JPY, KRW)","Self-test suite of 26 assertions at #selftest","Print to PDF"],
+"isAccessibleForFree":true,"license":"https://github.com/hoing327/offline-invoice",
+"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+"author":{"@type":"Person","name":"Taehyeon Ko"}},
+{"@type":"FAQPage","@id":"https://hoing327.github.io/offline-invoice/#faq","mainEntity":[
+{"@type":"Question","name":"Why not use Wave, Invoice Ninja, or FreshBooks?",
+"acceptedAnswer":{"@type":"Answer","text":"Use them if they fit — they do far more than this does. This is for the case where you send four invoices a year and don't want an account for it."}},
+{"@type":"Question","name":"Isn't localStorage risky? Clearing the browser wipes it.",
+"acceptedAnswer":{"@type":"Answer","text":"It does, and that's the honest trade. That's why there is an Export button that writes the whole dataset to one JSON file. The alternative is keeping your invoices on someone else's server, which is its own risk."}},
+{"@type":"Question","name":"It is served from GitHub Pages, so how is it offline?",
+"acceptedAnswer":{"@type":"Answer","text":"Only to hand you the file the first time. Save it to disk and the network is never touched again — you can verify that in devtools, the page makes zero requests."}},
+{"@type":"Question","name":"Why is there no automatic tax calculation?",
+"acceptedAnswer":{"@type":"Answer","text":"Because it would get it wrong. Tax rules differ by country, by state, and by what you sell, and they change. A tool that guessed would be worse than one that asks you to type the rate."}},
+{"@type":"Question","name":"How can I check the arithmetic is correct?",
+"acceptedAnswer":{"@type":"Answer","text":"Put #selftest on the end of the URL. It runs 26 assertions in front of you covering discounts, tax bases, deposits, per-line rounding, zero-decimal currencies, and month, year and leap-day boundaries."}}]}
+]}
+</script>
 <style>
   :root{
     --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
@@ -66,7 +89,7 @@
     display:flex; align-items:center; gap:8px; flex-wrap:wrap;
     padding:10px 14px; background:var(--panel); border-bottom:1px solid var(--line);
   }
-  .brand{font-weight:650; margin-right:6px; letter-spacing:-.01em}
+  .brand{font-weight:650; margin:0 6px 0 0; font-size:inherit; letter-spacing:-.01em}
   .brand span{color:var(--muted); font-weight:400; font-size:12px}
   .spacer{flex:1}
   .main{display:grid; grid-template-columns:minmax(360px,var(--formw,42%)) 1fr; flex:1; min-height:0}
@@ -145,7 +168,7 @@
     box-shadow:0 2px 24px #0004; border-radius:2px;
     font:12px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
-  .paper h1{font-size:30px; margin:0; letter-spacing:-.02em; font-weight:700}
+  .paper .doctitle{font-size:30px; margin:0; letter-spacing:-.02em; font-weight:700}
   .paper .sub{color:#6b7280; font-size:12px}
   .p-head{display:flex; justify-content:space-between; gap:20px; align-items:flex-start}
   .p-logo{max-height:64px; max-width:210px; object-fit:contain; display:block; margin-bottom:8px}
@@ -196,7 +219,7 @@
 <div class="app">
 
   <div class="topbar app-chrome">
-    <div class="brand">Invoice Generator <span>· offline · your data never leaves this device</span></div>
+    <h1 class="brand">Invoice Generator <span>· offline · your data never leaves this device</span></h1>
     <div class="spacer"></div>
     <button class="btn" id="btnNew">＋ New</button>
     <button class="btn" id="btnSave">Save</button>
@@ -846,7 +869,7 @@ function render(){
         '<div class="p-from">'+esc(fromBlock)+'</div>' +
       '</div>' +
       '<div style="text-align:right">' +
-        '<h1 style="color:'+esc(ink)+'">INVOICE</h1>' +
+        '<div class="doctitle" style="color:'+esc(ink)+'">INVOICE</div>' +
         '<div class="p-meta">'+meta+'</div>' +
         (stamp ? '<div style="margin-top:10px">'+stamp+'</div>' : '') +
       '</div>' +
