@@ -93,6 +93,18 @@
   .brand span{color:var(--muted); font-weight:400; font-size:12px}
   .spacer{flex:1}
   .main{display:grid; grid-template-columns:minmax(360px,var(--formw,42%)) 1fr; flex:1; min-height:0}
+  /* 이 줄은 .form 안이 아니라 .app 의 형제여야 한다 — .form 은 스크롤 컨테이너라
+     그 바닥에 둔 것은 끝까지 스크롤하지 않으면 존재하지 않는 것과 같다 */
+  .appfoot{
+    display:flex; align-items:baseline; gap:6px 14px; flex-wrap:wrap;
+    padding:7px 14px; background:var(--panel); border-top:1px solid var(--line);
+    font-size:12px; color:var(--muted); flex:0 0 auto;
+  }
+  .appfoot .sep{flex:1}
+  .appfoot a{color:var(--accent)}
+  @media (max-width:900px){ .appfoot .sep{display:none} }
+  /* 좁은 화면에서는 열거를 접는다 — 도구를 쓰는 화면이지 읽는 화면이 아니다 */
+  @media (max-width:640px){ .appfoot .detail{display:none} }
   .form{overflow:auto; padding:14px; border-right:1px solid var(--line); background:var(--bg)}
   .previewWrap{overflow:auto; padding:22px; background:var(--panel2); display:flex; justify-content:center; align-items:flex-start}
   @media (max-width:900px){
@@ -206,7 +218,7 @@
   .p-overdue{border-color:#e5484d; color:#e5484d}
 
   @media print{
-    .app-chrome, .topbar, .form, .drawer, .scrim, .toast{display:none !important}
+    .app-chrome, .topbar, .form, .drawer, .scrim, .toast, .appfoot{display:none !important}
     body{background:#fff}
     .main{display:block; height:auto}
     .previewWrap{padding:0; overflow:visible; display:block; background:#fff}
@@ -407,11 +419,10 @@
       </div>
 
       <div class="hint" style="padding:0 2px 24px; border-top:1px solid var(--line); padding-top:14px">
-        Free and unlicensed — <a href="https://github.com/hoing327/offline-invoice" style="color:var(--accent)">source on GitHub</a>.
         Save the page and it keeps working offline, forever.<br><br>
-        The contracts that go <i>with</i> an invoice — a fixed-scope agreement, a retainer, an NDA,
-        25 drop-in clauses, and the 8-email sequence for collecting an overdue invoice — are in
-        <a href="https://wisealpha.gumroad.com/l/freelance-pack" style="color:var(--accent)">the Freelance Contract &amp; Invoice Pack</a>, $29 once.
+        If you want the paperwork that surrounds an invoice — a fixed-scope agreement, a retainer,
+        an NDA, 25 drop-in clauses, and the 8-email sequence for collecting an overdue invoice —
+        that is the <a href="https://wisealpha.gumroad.com/l/freelance-pack" style="color:var(--accent)">Freelance Pack</a>, $29 once.
       </div>
     </div>
 
@@ -419,6 +430,14 @@
     <div class="previewWrap">
       <div class="paper" id="paper"></div>
     </div>
+  </div>
+
+  <div class="appfoot">
+    <span>Free and unlicensed · <a href="https://github.com/hoing327/offline-invoice">source</a></span>
+    <span class="sep"></span>
+    <span>The contracts that come <i>before</i> the invoice are in
+      <a href="https://wisealpha.gumroad.com/l/freelance-pack">the Freelance Pack</a>, $29 once.<span
+      class="detail"> Scope, retainer, NDA, and the 8-email sequence for an overdue one.</span></span>
   </div>
 </div>
 
